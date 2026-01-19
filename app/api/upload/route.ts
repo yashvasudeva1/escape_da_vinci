@@ -1,10 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import Papa from "papaparse";
 import * as XLSX from "xlsx";
-import {
-  flattenData,
-  removeUnnamedColumns,
-} from "@/lib/ingestion";
+import { flattenData, removeUnnamedColumns } from "@/lib/ingestion";
 
 export async function POST(request: NextRequest) {
   try {
@@ -21,16 +18,16 @@ export async function POST(request: NextRequest) {
 
     // Parse based on file type
     let result: { data: any[]; metadata: any };
-    
+
     if (file.name.endsWith(".csv")) {
       // Parse CSV from text
-      const text = buffer.toString('utf-8');
+      const text = buffer.toString("utf-8");
       const parsed = Papa.parse(text, {
         header: true,
         dynamicTyping: true,
         skipEmptyLines: true,
       });
-      
+
       result = {
         data: parsed.data,
         metadata: {
@@ -41,10 +38,10 @@ export async function POST(request: NextRequest) {
       };
     } else if (file.name.endsWith(".xlsx") || file.name.endsWith(".xls")) {
       // Parse Excel from buffer
-      const workbook = XLSX.read(buffer, { type: 'buffer' });
+      const workbook = XLSX.read(buffer, { type: "buffer" });
       const firstSheet = workbook.Sheets[workbook.SheetNames[0]];
       const data = XLSX.utils.sheet_to_json(firstSheet);
-      
+
       result = {
         data,
         metadata: {
